@@ -76,7 +76,7 @@ export const feedUrls = [
   {'url': 'https://tosatur.com/notes/rss.xml'},
   {'url': 'https://pfy.ch/rss.xml'},
   {'url': 'https://benji.dog/feed.xml'},
-  {'url': 'http://wreckage.link/rss.xml'},
+  // {'url': 'http://wreckage.link/rss.xml'},
   {'url': 'https://luis.zip/blog/index.xml'},
   {'url': 'https://foreverliketh.is/blog/index.xml'},
   {'url': 'http://ratfactor.com/atom.xml'},
