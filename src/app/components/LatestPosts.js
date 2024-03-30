@@ -37,26 +37,34 @@ export default async function LatestPosts() {
 
   // Validate the feed items before sorting
   validFeeds = validFeeds.map(feed => {
-    const now = new Date();
-
-    // Ensure post.pubDate is valid
-    let pubDate = new Date(feed.post.pubDate);
-    if (!pubDate || isNaN(pubDate.getTime()) || pubDate > now) {
-      const lastBuildDate = new Date(feed.lastBuildDate);
-      if (!isNaN(lastBuildDate.getTime()) && lastBuildDate <= now) {
-        feed.post.pubDate = feed.lastBuildDate;
-      } else {
-        feed.post.pubDate = new Date().toISOString(); // assign current date as default
+    try {
+      const now = new Date();
+  
+      // Ensure post.pubDate is valid
+      let pubDate = new Date(feed.post.pubDate);
+      if (!pubDate || isNaN(pubDate.getTime()) || pubDate > now) {
+        const lastBuildDate = new Date(feed.lastBuildDate);
+        if (!isNaN(lastBuildDate.getTime()) && lastBuildDate <= now) {
+          feed.post.pubDate = feed.lastBuildDate;
+        } else {
+          feed.post.pubDate = new Date().toISOString(); // assign current date as default
+        }
       }
+  
+      // Assign the site URL as the post URL if none is present
+      if (!feed.post.link) {
+        feed.post.link = feed.feedLink; 
+      }
+  
+      return feed;
+    } catch (error) {
+      console.error(`Error processing feed: ${error}`);
+      return null; // return null if there's an error processing a feed
     }
-
-    // Assign the site URL as the post URL if none is present
-    if (!feed.post.link) {
-      feed.post.link = feed.feedLink; 
-    }
-
-    return feed;
   });
+
+  // Remove feeds that couldn't be processed
+  validFeeds = validFeeds.filter(feed => feed !== null);
 
   // Sort posts in reverse chronological order
   const sortedFeeds = validFeeds.sort((a, b) => new Date(b.post.pubDate) - new Date(a.post.pubDate));
