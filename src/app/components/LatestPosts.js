@@ -19,6 +19,7 @@ export async function getFeeds(feedUrls) {
       }
 
       return { post: posts[0], feedTitle: feedData.title, feedLink: feedData.link, lastBuildDate: feedData.lastBuildDate };
+
     } catch (err) {
       console.error(`Error fetching from ${feed.url}:`, err);
       return null;
@@ -39,7 +40,7 @@ export default async function LatestPosts() {
   validFeeds = validFeeds.map(feed => {
     try {
       const now = new Date();
-  
+
       // Ensure post.pubDate is valid
       let pubDate = new Date(feed.post.pubDate);
       if (!pubDate || isNaN(pubDate.getTime()) || pubDate > now) {
@@ -50,21 +51,19 @@ export default async function LatestPosts() {
           feed.post.pubDate = new Date().toISOString(); // assign current date as default
         }
       }
-  
+
       // Assign the site URL as the post URL if none is present
       if (!feed.post.link) {
         feed.post.link = feed.feedLink; 
       }
-  
+
       return feed;
-    } catch (error) {
-      console.error(`Error processing feed: ${error}`);
-      return null; // return null if there's an error processing a feed
+
+    } catch (err) {
+      console.error(`Error processing feed: ${err}`);
+      return null;
     }
   });
-
-  // Remove feeds that couldn't be processed
-  validFeeds = validFeeds.filter(feed => feed !== null);
 
   // Sort posts in reverse chronological order
   const sortedFeeds = validFeeds.sort((a, b) => new Date(b.post.pubDate) - new Date(a.post.pubDate));
@@ -76,22 +75,22 @@ export default async function LatestPosts() {
         {sortedFeeds.map((feed, index) => (
           <li key={index}>
             <a href={feed.post.link} 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className="block border-b border-slate-100 p-3 text-slate-800 hover:bg-slate-100"
+               target='_blank' 
+               rel='noopener noreferrer'
+               className='block border-b border-slate-100 p-3 text-slate-800 hover:bg-slate-100'
             >
-              <div className="flex lg:gap-x-3">
-                <div className="flex grow flex-wrap items-center justify-start overflow-hidden text-sm lg:flex-nowrap lg:gap-x-3 lg:text-base">
-                  <h3 className="line-clamp-1 basis-1/2 font-bold lg:shrink-0 lg:basis-64">
+              <div className='flex lg:gap-x-3'>
+                <div className='flex grow flex-wrap items-center justify-start overflow-hidden text-sm lg:flex-nowrap lg:gap-x-3 lg:text-base'>
+                  <h3 className='line-clamp-1 basis-1/2 font-bold lg:shrink-0 lg:basis-64'>
                     {feed.feedTitle}
                   </h3>
-                  <h3 className="ml-auto shrink-0 basis-1/2 text-right text-slate-400 lg:order-5 lg:basis-auto">
+                  <h3 className='ml-auto shrink-0 basis-1/2 text-right text-slate-400 lg:order-5 lg:basis-auto'>
                     {formatDate(new Date(feed.post.pubDate))}
                   </h3>
-                  <h3 className="basis-full lg:basis-auto lg:shrink-0">
+                  <h3 className='basis-full lg:basis-auto lg:shrink-0'>
                     {feed.post.title}
                   </h3>
-                  <h3 className="line-clamp-2 text-slate-500 lg:truncate">
+                  <h3 className='line-clamp-2 text-slate-500 lg:truncate'>
                     {feed.post.contentSnippet}
                   </h3>
                 </div>
