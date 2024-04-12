@@ -7,7 +7,7 @@ const rssParser = new Parser();
 export async function getFeeds(feedUrls) {
   return await Promise.all(feedUrls.map(async (feed) => {
     try {
-      const res = await fetch(feed.url);
+      const res = await fetch(feed.url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch data');
       const text = await res.text();
       const feedData = await rssParser.parseString(text);
